@@ -207,7 +207,9 @@ class GoogleCloudStorage implements IStorage {
     async tryToDoOrFail(asyncOperation) {
         for (let retriesCount = this.retriesCount; retriesCount > 0; retriesCount--) {
             try {
+                this.log(`DBG:start:asyncOperation ${retriesCount}`);
                 let rusultOfAsyncOperation = await asyncOperation();
+                this.log(`DBG:end:asyncOperation ${retriesCount}`);
                 return rusultOfAsyncOperation;
             } catch (error) {
                 this.log(`Error while saving blob: ${error}. Retries left: ${retriesCount}`);

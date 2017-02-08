@@ -2,7 +2,7 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
@@ -35,6 +35,8 @@ class GoogleCloudStorage {
                 prefix: prefix || "",
                 autoPaginate: false
             };
+            // Expand query by additional parameters.
+            // DOCS: https://googlecloudplatform.github.io/google-cloud-node/#/docs/storage/0.5.0/storage/bucket?method=getFiles
             if (queryOptions) {
                 for (let option in queryOptions) {
                     query[option] = queryOptions[option];
@@ -176,7 +178,9 @@ class GoogleCloudStorage {
         return __awaiter(this, void 0, void 0, function* () {
             for (let retriesCount = this.retriesCount; retriesCount > 0; retriesCount--) {
                 try {
+                    this.log(`DBG:start:asyncOperation ${retriesCount}`);
                     let rusultOfAsyncOperation = yield asyncOperation();
+                    this.log(`DBG:end:asyncOperation ${retriesCount}`);
                     return rusultOfAsyncOperation;
                 }
                 catch (error) {
@@ -184,6 +188,7 @@ class GoogleCloudStorage {
                     yield new Promise((resolve) => {
                         setTimeout(resolve, this.retryInterval);
                     });
+                    // Last try failed.
                     if (retriesCount === 1) {
                         throw new Error(error);
                     }

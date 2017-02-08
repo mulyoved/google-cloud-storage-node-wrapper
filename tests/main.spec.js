@@ -24,6 +24,7 @@ const gcsOptions = {
 const gcsWrapper = new GoogleCloudStorage(gcsConfig, gcsOptions);
 describe("Google Cloud Storage Wrapper", () => {
     before(function (done) {
+        // Clean bucket before tests.
         gcsstorage(gcsConfig)
             .bucket(gcsOptions.bucket)
             .deleteFiles()
@@ -91,6 +92,7 @@ describe("Google Cloud Storage Wrapper", () => {
             }).catch(done);
         });
         it("should upload image with specified content type and then retrieve it via HTTP", function (done) {
+            // For some reason sometimes fails, it may be some delay when file becomes publicly accessible.
             this.timeout(6000);
             let fileName = path.resolve(__dirname, "./files/tesla.png");
             let buffer = fs.readFileSync(fileName);
